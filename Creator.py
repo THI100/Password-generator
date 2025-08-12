@@ -1,13 +1,13 @@
-def makePassword (SecurityLevel: str):
-    print(f"MakePassword function called with security level: {SecurityLevel}")
+def makePassword (SecLVL: str, type_: str):
+    print(f"MakePassword function called with security level: {SecLVL}, type: {type_}")
 
-    if SecurityLevel == "Lw":
+    if SecLVL == "Lw":
         print("Low level selected")
-    elif SecurityLevel == "Md":
+    elif SecLVL == "Md":
         print("Medium level selected")
-    elif SecurityLevel == "Hg":
+    elif SecLVL == "Hg":
         print("High level selected")
-    elif SecurityLevel == "Ex":
+    elif SecLVL == "Ex":
         print("Extreme level selected")
     else:
         print("Error: Invalid security level")
