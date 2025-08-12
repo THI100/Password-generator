@@ -1,4 +1,4 @@
-import Creator
+from Creator import makePassword
 import Main
 import tkinter as tk
 
@@ -30,7 +30,7 @@ select_type_PIN6 = tk.Radiobutton(content, text='Six numbers', value='Numeric_6'
 select_type_ASCII = tk.Radiobutton(content, text='Normal', value='ASCII', variable=type_)
 
 saves = tk.Button(content, text="Saved Passwords", default="active", command=Main.SavedPasswords)
-confirm = tk.Button(content, text="Confirm", default="active", command=lambda: Creator.makePassword(SecurityLvl.get(), type_.get()))
+confirm = tk.Button(content, text="Confirm", default="active", command=lambda: makePassword(SecurityLvl.get(), type_.get()))
 
 # Layout widgets
 title.grid(row=0, column=0, columnspan=4, pady=20)
@@ -50,7 +50,10 @@ select_type_PIN.grid(row=5, column=1, sticky='w')
 select_type_PIN6.grid(row=5, column=2, sticky='w')
 select_type_ASCII.grid(row=5, column=3, sticky='w')
 
-confirm.grid(row=6, column=0, pady=20)
-saves.grid(row=6, column=2, pady=20)
+confirm.grid(row=6, column=0, pady=30)
+saves.grid(row=6, column=2, pady=10)
+
+# def PreviewPassword(Password):
+
 
 root.mainloop()
