@@ -8,7 +8,7 @@ content = tk.Frame(root)
 content.pack(fill='both', expand=True)
 
 root.title("Password Generator")
-root.geometry("1280x720")
+root.geometry("600x400")
 
 title = tk.Label(content, text="Password Generator", font=("Arial", 24))
 stc = tk.Label(content, text="Select the configurations:", font=("Arial", 18))
@@ -54,6 +54,5 @@ confirm.grid(row=6, column=0, pady=30)
 saves.grid(row=6, column=2, pady=10)
 
 # def PreviewPassword(Password):
-
 
 root.mainloop()

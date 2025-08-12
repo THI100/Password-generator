@@ -1,100 +1,59 @@
 import random
 
-def makePassword (SecLVL: str, type_: str):
-    print(f"MakePassword function called with security level: {SecLVL}, type: {type_}")
+def generate_from_pattern(characters, pattern, safe_index=None):
+    """Generate a password given a list of (count, range_type) tuples."""
+    result = ""
+    length = len(characters) - 1
+    for count, mode in pattern:
+        for _ in range(count):
+            if mode == "any":
+                idx = random.randint(0, length)
+            elif mode == "safe":
+                idx = random.randint(safe_index, length)
+            elif mode == "seq":  # sequential from random start
+                start = random.randint(0, length)
+                idx = (start + _) % len(characters)
+            elif mode == "mul":  # multiply index by position
+                start = random.randint(0, length)
+                idx = (start * _ % len(characters))
+            result += characters[idx]
+    return result
 
-    Password = ""
+def makePassword(SecLVL: str, type_: str):
+    print(f"MakePassword called with: SecLVL={SecLVL}, type={type_}")
 
-    if type_ == "Alphanumeric":
-        characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        SAFEind = round(len(characters) / 2)
-        ind = len(characters) - 1
+    charsets = {
+        "Alphanumeric": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
+        "Numeric_4": "0123456789",
+        "Numeric_6": "0123456789",
+        "ASCII": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:',.<>?/"
+    }
 
-        if SecLVL == "Lw":
-            RndIndex = random.randint(0, ind)
-            for i in range(8):
-                Password += characters[RndIndex + i % len(characters)]
+    lengths = {
+        "Alphanumeric": 8,
+        "Numeric_4": 4,
+        "Numeric_6": 6,
+        "ASCII": 8
+    }
 
-        elif SecLVL == "Md":
-            for i in range(8):
-                RndIndex = random.randint(0, ind)
-                Password += characters[RndIndex]
-
-        elif SecLVL == "Hg":
-            for i in range(6):
-                RndIndex = random.randint(0, ind)
-                Password += characters[RndIndex]
-            for i in range(4):
-                RNDINDEx = random.randint(SAFEind, ind)
-                Password += characters[RNDINDEx]
-            for i in range(2):
-                RndIndex = random.randint(0, ind)
-                Password += characters[RndIndex]
-
-        elif SecLVL == "Ex":
-            for i in range(3):
-                RndIndex = random.randint(0, ind)
-                Password += characters[RndIndex]
-            for i in range(2):
-                RNDINDEx = random.randint(SAFEind, ind)
-                Password += characters[RNDINDEx]
-            for i in range(4):
-                RndIndex = random.randint(0, ind)
-                Password += characters[RndIndex]
-            for i in range(3):
-                RNDINDEx = random.randint(SAFEind, ind)
-                Password += characters[RNDINDEx]
-
-        else:
-            print("Error: Invalid security level")
-
-    elif type_ == "Numeric_4":
-        characters = "0123456789"
-        length = 4
-
-        if SecLVL == "Lw":
-            print("Low level selected")
-        elif SecLVL == "Md":
-            print("Medium level selected")
-        elif SecLVL == "Hg":
-            print("High level selected")
-        elif SecLVL == "Ex":
-            print("Extreme level selected")
-        else:
-            print("Error: Invalid security level")
-
-    elif type_ == "Numeric_6":
-        characters = "0123456789"
-        length = 6
-
-        if SecLVL == "Lw":
-            print("Low level selected")
-        elif SecLVL == "Md":
-            print("Medium level selected")
-        elif SecLVL == "Hg":
-            print("High level selected")
-        elif SecLVL == "Ex":
-            print("Extreme level selected")
-        else:
-            print("Error: Invalid security level")
-
-    elif type_ == "ASCII":
-        characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:',.<>?/"
-        length = 12
-
-        if SecLVL == "Lw":
-            print("Low level selected")
-        elif SecLVL == "Md":
-            print("Medium level selected")
-        elif SecLVL == "Hg":
-            print("High level selected")
-        elif SecLVL == "Ex":
-            print("Extreme level selected")
-        else:
-            print("Error: Invalid security level")
-
-    else:
+    if type_ not in charsets:
         print("Error: Invalid password type")
         return
-    
-    print(f"Generated password: {Password}")
+
+    characters = charsets[type_]
+    safe_index = round((len(characters) - 1) / 2)
+
+    # Define patterns for each security level
+    patterns = {
+        "Lw": [(lengths[type_], "seq")],
+        "Md": [(lengths[type_], "any")],
+        "Hg": [(6, "any"), (4, "safe"), (2, "any")] if lengths[type_] == 8 else [(lengths[type_], "seq")],
+        "Ex": [(3, "any"), (2, "safe"), (4, "any"), (3, "safe")] if lengths[type_] == 8 else [(lengths[type_], "mul")]
+    }
+
+    if SecLVL not in patterns:
+        print("Error: Invalid security level")
+        return
+
+    password = generate_from_pattern(characters, patterns[SecLVL], safe_index)
+    print(f"Generated password: {password}")
